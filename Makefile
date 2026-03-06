@@ -6,3 +6,13 @@ build:
 
 package-install:
 	uv tool install dist/*.whl
+
+good:
+	uv build
+	uv tool install dist/*.whl
+	gendiff "gendiff/examples/file1.json" "gendiff/examples/file2.json"
+
+send:
+	git add .
+	git commit -m "add some features"
+	git push -u origin main
