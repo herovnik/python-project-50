@@ -11,6 +11,15 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+      - name: Setup python
+        run uv python install 3.12
+
+      - name: install dependencies
+        run: uv sync --all-extras --dev
 
       - run: make lint
       - run: make test
