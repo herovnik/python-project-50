@@ -10,8 +10,8 @@ package-install:
 good:
 	uv build
 	uv tool install dist/*.whl
-	gendiff "gendiff/examples/file1.json" "gendiff/examples/file2.json"
 	uv run ruff check
+	uv run pytest
 
 send:
 	git add .
