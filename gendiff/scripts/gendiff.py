@@ -37,7 +37,7 @@ def generate_diff(file_path1, file_path2, form=None):
         data2 = dict(sorted(dict(yaml.safe_load(open(file_path2))).items()))
     
     if not form:
-        return format_dict_no_quotes(str(generate_req_diff(data1, data2)))
+        return format_value(stylish(generate_req_diff(data1, data2)))
     if form == 'plain':
         return plain_diff(data1, data2)
     if form == 'json':
@@ -108,21 +108,44 @@ def plain_diff(data1, data2):
     return result
 
 
-def format_dict_no_quotes(data, depth=1):
-    if not isinstance(data, dict):
-        return str(data)
-    
-    indent = "    " * depth
-    closing_indent = "    " * (depth - 1)
-    
-    lines = ["{"]
-    for key, value in data.items():
-        formatted_value = format_dict_no_quotes(value, depth + 1)
-        lines.append(f"{indent}{key}: {formatted_value}")
-        
-    lines.append(f"{closing_indent}")
-    
-    return "\n".join(lines)
+def format_value(value, depth):
+    if isinstance(value, dict):
+        indent = '    ' * (depth + 1)
+        bracket_indent = '    ' * depth
+        lines = []
+        for k, v in value.items():
+            lines.append(f'{indent}{k}: {format_value(v, depth + 1)}')
+        return '{\n' + '\n'.join(lines) + '\n' + bracket_indent + '}'
+    if isinstance(value, bool):
+        return str(value).lower()
+    if value is None:
+        return 'null'
+    return str(value)
+
+
+def stylish(diff, depth=1):
+    bracket_indent = '    ' * (depth - 1)
+    lines = []
+
+    for raw_key, value in diff.items():
+        prefix = raw_key[:2]
+        key = raw_key[2:]
+
+        symbol = prefix.strip()
+        sign = f'{symbol} ' if symbol else '  '
+        line_indent = f'{bracket_indent}  {sign}'
+
+        if isinstance(value, dict) and any(
+            k.startswith(('+ ', '- ', '  ')) for k in value
+        ):
+            formatted = stylish(value, depth + 1)
+        else:
+            formatted = format_value(value, depth)
+
+        lines.append(f'{line_indent}{key}: {formatted}')
+
+    return '{\n' + '\n'.join(lines) + '\n' + bracket_indent + '}'
+
 
 
 if __name__ == '__main__':

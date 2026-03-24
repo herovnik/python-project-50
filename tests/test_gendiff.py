@@ -4,7 +4,7 @@ from gendiff.scripts import gendiff
 def test_gendiff():
     file1 = "./tests/examples/file1.json"
     file2 = "./tests/examples/file2.json"
-    result = format_dict_no_quotes(str({
+    result = format_value(stylish({
                 '- follow': False,
                 '  host': 'hexlet.io',
                 '- proxy': '123.234.53.22',
@@ -18,7 +18,7 @@ def test_gendiff():
 def test_gendiff_yaml():
     file1 = "./tests/examples/file1.yaml"
     file2 = "./tests/examples/file2.yaml"
-    result = format_dict_no_quotes(str({
+    result = format_value(stylish({
                 '- follow': False,
                 '  host': 'hexlet.io',
                 '- proxy': '123.234.53.22',
@@ -32,7 +32,7 @@ def test_gendiff_yaml():
 def test_gendiff_req():
     file1 = "./tests/examples/filereq1.json"
     file2 = "./tests/examples/filereq2.json"
-    result = format_dict_no_quotes(str({'  common': 
+    result = format_value(stylish({'  common': 
                 {'+ follow': False, 
                     '  setting1': 'Value 1',
                     '- setting2': 200, '- setting3': True,
@@ -94,18 +94,40 @@ def test_gendiff_plain():
     assert gendiff.generate_diff(file1, file2, form='plain') == result
 
 
-def format_dict_no_quotes(data, depth=1):
-    if not isinstance(data, dict):
-        return str(data)
-    
-    indent = "    " * depth
-    closing_indent = "    " * (depth - 1)
-    
-    lines = ["{"]
-    for key, value in data.items():
-        formatted_value = format_dict_no_quotes(value, depth + 1)
-        lines.append(f"{indent}{key}: {formatted_value}")
-        
-    lines.append(f"{closing_indent}")
-    
-    return "\n".join(lines)
+def format_value(value, depth):
+    if isinstance(value, dict):
+        indent = '    ' * (depth + 1)
+        bracket_indent = '    ' * depth
+        lines = []
+        for k, v in value.items():
+            lines.append(f'{indent}{k}: {format_value(v, depth + 1)}')
+        return '{\n' + '\n'.join(lines) + '\n' + bracket_indent + '}'
+    if isinstance(value, bool):
+        return str(value).lower()
+    if value is None:
+        return 'null'
+    return str(value)
+
+
+def stylish(diff, depth=1):
+    bracket_indent = '    ' * (depth - 1)
+    lines = []
+
+    for raw_key, value in diff.items():
+        prefix = raw_key[:2]
+        key = raw_key[2:]
+
+        symbol = prefix.strip()
+        sign = f'{symbol} ' if symbol else '  '
+        line_indent = f'{bracket_indent}  {sign}'
+
+        if isinstance(value, dict) and any(
+            k.startswith(('+ ', '- ', '  ')) for k in value
+        ):
+            formatted = stylish(value, depth + 1)
+        else:
+            formatted = format_value(value, depth)
+
+        lines.append(f'{line_indent}{key}: {formatted}')
+
+    return '{\n' + '\n'.join(lines) + '\n' + bracket_indent + '}'
