@@ -10,7 +10,7 @@ def main():
                         description='Compares two configuration" \
                         "files and shows a difference')
 
-    parser.add_argument('-f', '--format', choices=['json', 'plain'], 
+    parser.add_argument('-f', '--format', choices=['json', 'plain', 'stylish'], 
                         help='set format of output')
     
     parser.add_argument('first_file')
