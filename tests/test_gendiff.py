@@ -92,7 +92,8 @@ def test_gendiff_plain():
             "'str'\n" \
             "Property 'group2' was removed\n" \
             "Property 'group3' was added with value: [complex value]"
-    assert gendiff.generate_diff(file1, file2, form='plain') == result
+    assert gendiff.generate_diff(file1, file2, form='plain') == \
+                    format_value(result)
 
 
 def format_value(value, depth=0):

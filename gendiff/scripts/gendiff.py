@@ -39,7 +39,7 @@ def generate_diff(file_path1, file_path2, form=None):
     if not form or form == 'stylish':
         return format_value(stylish(generate_req_diff(data1, data2)))
     if form == 'plain':
-        return plain_diff(data1, data2)
+        return format_value(plain_diff(data1, data2))
     if form == 'json':
         return json.dumps(generate_req_diff(data1, data2), indent=4)
 
