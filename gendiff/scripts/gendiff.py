@@ -37,7 +37,7 @@ def generate_diff(file_path1, file_path2, form=None):
         data2 = dict(sorted(dict(yaml.safe_load(open(file_path2))).items()))
     
     if not form:
-        return str(generate_req_diff(data1, data2))
+        return format_dict_no_quotes(str(generate_req_diff(data1, data2)))
     if form == 'plain':
         return plain_diff(data1, data2)
     if form == 'json':
@@ -106,6 +106,23 @@ def plain_diff(data1, data2):
         return lines
     result = compare_dicts(data1, data2)
     return result
+
+
+def format_dict_no_quotes(data, depth=1):
+    if not isinstance(data, dict):
+        return str(data)
+    
+    indent = "    " * depth
+    closing_indent = "    " * (depth - 1)
+    
+    lines = ["{"]
+    for key, value in data.items():
+        formatted_value = format_dict_no_quotes(value, depth + 1)
+        lines.append(f"{indent}{key}: {formatted_value}")
+        
+    lines.append(f"{closing_indent}")
+    
+    return "\n".join(lines)
 
 
 if __name__ == '__main__':

@@ -4,35 +4,35 @@ from gendiff.scripts import gendiff
 def test_gendiff():
     file1 = "./tests/examples/file1.json"
     file2 = "./tests/examples/file2.json"
-    result = str({
+    result = format_dict_no_quotes(str({
                 '- follow': False,
                 '  host': 'hexlet.io',
                 '- proxy': '123.234.53.22',
                 '- timeout': 50,
                 '+ timeout': 20,
                 '+ verbose': True
-            })
+            }))
     assert gendiff.generate_diff(file1, file2) == result
 
 
 def test_gendiff_yaml():
     file1 = "./tests/examples/file1.yaml"
     file2 = "./tests/examples/file2.yaml"
-    result = str({
+    result = format_dict_no_quotes(str({
                 '- follow': False,
                 '  host': 'hexlet.io',
                 '- proxy': '123.234.53.22',
                 '- timeout': 50,
                 '+ timeout': 20,
                 '+ verbose': True
-            })
+            }))
     assert gendiff.generate_diff(file1, file2) == result
 
 
 def test_gendiff_req():
     file1 = "./tests/examples/filereq1.json"
     file2 = "./tests/examples/filereq2.json"
-    result = str({'  common': 
+    result = format_dict_no_quotes(str({'  common': 
                 {'+ follow': False, 
                     '  setting1': 'Value 1',
                     '- setting2': 200, '- setting3': True,
@@ -70,7 +70,7 @@ def test_gendiff_req():
                     }, 
                     'fee': 100500
                 }
-            })
+            }))
     assert gendiff.generate_diff(file1, file2) == result
 
 
@@ -92,3 +92,20 @@ def test_gendiff_plain():
             "Property 'group3' was added with value: [complex value]"
             ]
     assert gendiff.generate_diff(file1, file2, form='plain') == result
+
+
+def format_dict_no_quotes(data, depth=1):
+    if not isinstance(data, dict):
+        return str(data)
+    
+    indent = "    " * depth
+    closing_indent = "    " * (depth - 1)
+    
+    lines = ["{"]
+    for key, value in data.items():
+        formatted_value = format_dict_no_quotes(value, depth + 1)
+        lines.append(f"{indent}{key}: {formatted_value}")
+        
+    lines.append(f"{closing_indent}")
+    
+    return "\n".join(lines)
