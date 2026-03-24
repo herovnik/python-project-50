@@ -108,7 +108,7 @@ def plain_diff(data1, data2):
     return result
 
 
-def format_value(value, depth):
+def format_value(value, depth=0):
     if isinstance(value, dict):
         indent = '    ' * (depth + 1)
         bracket_indent = '    ' * depth
@@ -145,7 +145,6 @@ def stylish(diff, depth=1):
         lines.append(f'{line_indent}{key}: {formatted}')
 
     return '{\n' + '\n'.join(lines) + '\n' + bracket_indent + '}'
-
 
 
 if __name__ == '__main__':

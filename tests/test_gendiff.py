@@ -94,7 +94,7 @@ def test_gendiff_plain():
     assert gendiff.generate_diff(file1, file2, form='plain') == result
 
 
-def format_value(value, depth):
+def format_value(value, depth=0):
     if isinstance(value, dict):
         indent = '    ' * (depth + 1)
         bracket_indent = '    ' * depth
