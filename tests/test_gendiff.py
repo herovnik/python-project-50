@@ -79,7 +79,7 @@ def test_gendiff_plain():
     file2 = "./tests/examples/filereq2.json"
     result = "Property 'common.follow' was added with value: false\n" \
             "Property 'common.setting2' was removed\n" \
-            "Property 'common.setting3' was updated. From true to None\n" \
+            "Property 'common.setting3' was updated. From true to null\n" \
             "Property 'common.setting4' was added with value: 'blah blah'\n" \
             "Property 'common.setting5' was added with value: " \
             "[complex value]\n" \
