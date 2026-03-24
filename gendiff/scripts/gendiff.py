@@ -36,7 +36,7 @@ def generate_diff(file_path1, file_path2, form=None):
         data1 = dict(sorted(dict(yaml.safe_load(open(file_path1))).items()))
         data2 = dict(sorted(dict(yaml.safe_load(open(file_path2))).items()))
     
-    if not form:
+    if not form or form == 'stylish':
         return format_value(stylish(generate_req_diff(data1, data2)))
     if form == 'plain':
         return plain_diff(data1, data2)
