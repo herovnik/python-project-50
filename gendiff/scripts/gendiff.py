@@ -105,6 +105,7 @@ def plain_diff(data1, data2):
 
         return lines
     result = compare_dicts(data1, data2)
+    result = '\n'.join(result)
     return result
 
 

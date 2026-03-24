@@ -77,20 +77,21 @@ def test_gendiff_req():
 def test_gendiff_plain():
     file1 = "./tests/examples/filereq1.json"
     file2 = "./tests/examples/filereq2.json"
-    result = [
-            "Property 'common.follow' was added with value: false",
-            "Property 'common.setting2' was removed",
-            "Property 'common.setting3' was updated. From true to None",
-            "Property 'common.setting4' was added with value: 'blah blah'",
-            "Property 'common.setting5' was added with value: [complex value]",
-            "Property 'common.setting6.doge.wow' was updated. "
-            "From '' to 'so much'",
-            "Property 'common.setting6.ops' was added with value: 'vops'",
-            "Property 'group1.baz' was updated. From 'bas' to 'bars'",
-            "Property 'group1.nest' was updated. From [complex value] to 'str'",
-            "Property 'group2' was removed",
+    result = "Property 'common.follow' was added with value: false\n" \
+            "Property 'common.setting2' was removed\n" \
+            "Property 'common.setting3' was updated. From true to None\n" \
+            "Property 'common.setting4' was added with value: 'blah blah'\n" \
+            "Property 'common.setting5' was added with value: " \
+            "[complex value]\n" \
+            "Property 'common.setting6.doge.wow' was updated. " \
+            "From '' to 'so much'\n" \
+            "Property 'common.setting6.ops' was added with value: " \
+            "'vops'\n" \
+            "Property 'group1.baz' was updated. From 'bas' to 'bars'\n" \
+            "Property 'group1.nest' was updated. From [complex value] to " \
+            "'str'\n" \
+            "Property 'group2' was removed\n" \
             "Property 'group3' was added with value: [complex value]"
-            ]
     assert gendiff.generate_diff(file1, file2, form='plain') == result
 
 
